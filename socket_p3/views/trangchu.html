@@ -1,0 +1,141 @@
+<html>
+
+<head>
+    <title>Learning Socket.io</title>
+    <script src="socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('http://localhost:3000');
+        socket.on('server-send-list-user', function (data) {
+            console.log('server-send-list-user', data);
+            let htmlDOM = ``;
+            const currentUser = localStorage.getItem('user');
+            const parseCurrentUser = JSON.parse(currentUser);
+            if (data.length > 0) {
+                data.forEach((item) => {
+                    if (item.username === parseCurrentUser.username)
+                        htmlDOM = htmlDOM + `<div class="useronline">${item.username} (Bạn)</div>`;
+                    else htmlDOM = htmlDOM + `<div class="useronline">${item.username}</div>`;
+                });
+            }
+            document.getElementById('replaceUser').innerHTML = htmlDOM;
+        });
+        socket.on('response-client-login-success', function (data) {
+            if (data.username) {
+                alert('Đăng nhập thành công');
+                document.getElementById('loginForm').style.display = 'none';
+                document.getElementById('chatForm').style.display = 'block';
+                document.getElementById('currentUser').innerHTML = data.username;
+                localStorage.setItem('user', JSON.stringify({
+                    id: data.id,
+                    username: data.username
+                }));
+            }
+        });
+        socket.on('response-client-login-failed', (data) => {
+            if (data === false) {
+                alert('Đăng nhập không thành công, vui lòng đăng nhập lại');
+            }
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="layout.css">
+    <script src="process.js"></script>
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="loginForm">
+            <h1 style="color: green;">Login</h1>
+            <h3>Username:</h3>
+            <input type="text" id="txtUsername" value="">
+            <h3>Password</h3>
+            <input type="password" id="txtPassword" value="">
+            <input type="button" value="Login" id="bthRegister" onclick=login()>
+            <a href="/register">Chưa có tài khoản</a>
+        </div>
+        <div id="chatForm">
+            <div id="left">
+                <div id="boxTitle">User Online</div>
+                <div id="boxContent">
+                    <span id="replaceUser"></span>
+                    <!-- <div class="useronline">Teo Nguyen</div>
+                    <div class="useronline">Teo Nguyen</div>
+                    <div class="useronline">Teo Nguyen</div>
+                    <div class="useronline">Teo Nguyen</div>
+                    <div class="useronline">Teo Nguyen</div> -->
+                </div>
+            </div>
+            <div id="right">
+                <div id="sayHi">
+                    Hello
+                    <span id="currentUser">Teo</span>
+                    <input type="button" id="btnLogout" value="Logout" onclick=onLogout()>
+                </div>
+                <div id="listMessages">
+
+                </div>
+                <input type="text" id="txtMessage">
+                <input type="button" id="btnSendMesage" value="Send">
+            </div>
+        </div>
+    </div>
+    <script>
+        (function () {
+            const currentUser = localStorage.getItem('user');
+            const parseCurrentUser = JSON.parse(currentUser);
+            var allUsers, htmlDOM ='';
+            socket.emit('getAllUser');
+            socket.on('serverAllUser', (data) => {
+                for (let i = 0; i < data.length; i++) {
+                    if (data[i].username === parseCurrentUser?.username && parseCurrentUser) {
+                        allUsers = true
+                        break;
+                    }
+                }
+                if (localStorage.user !== '' && localStorage?.user && allUsers === true) {
+                    document.getElementById('loginForm').style.display = 'none';
+                    document.getElementById('chatForm').style.display = 'block';
+                    const currentUser = localStorage.getItem('user');
+                    const parseCurrentUser = JSON.parse(currentUser);
+                    document.getElementById('currentUser').innerHTML = parseCurrentUser.username;
+                    data.forEach((item) => {
+                    if (item.username === parseCurrentUser.username)
+                        htmlDOM = htmlDOM + `<div class="useronline">${item.username} (Bạn)</div>`;
+                    else htmlDOM = htmlDOM + `<div class="useronline">${item.username}</div>`;
+                });
+                } else {
+                    document.getElementById('loginForm').style.display = 'block';
+                    document.getElementById('chatForm').style.display = 'none';
+                }
+            });
+            // if (localStorage.user !== '' && localStorage?.user) {
+            //     document.getElementById('loginForm').style.display = 'none';
+            //     document.getElementById('chatForm').style.display = 'block';
+            //     const currentUser = localStorage.getItem('user');
+            //     const parseCurrentUser = JSON.parse(currentUser);
+            //     document.getElementById('currentUser').innerHTML = parseCurrentUser.username;
+            // } else {
+            //     document.getElementById('loginForm').style.display = 'block';
+            //     document.getElementById('chatForm').style.display = 'none';
+            // }
+        })();
+        function onLogout() {
+            localStorage.clear();
+            window.location.href = '/';
+        }
+        function login() {
+            const username = document.getElementById('txtUsername').value;
+            const password = document.getElementById('txtPassword').value;
+            if (username === '' || password === '') {
+                alert('Vui lòng điền Username, password để đăng nhập!');
+            } else {
+                const data = {
+                    username: username,
+                    password: password
+                }
+                socket.emit('client-login', data);
+            }
+        }
+    </script>
+</body>
+
+</html>

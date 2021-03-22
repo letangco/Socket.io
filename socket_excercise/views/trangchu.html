@@ -1,0 +1,58 @@
+<html>
+
+<head>
+    <title>Learning Socket.io</title>
+    <script src="socket.io/socket.io.js"></script>
+    <script>
+        var socket = io('http://localhost:3000');
+        socket.on('Server-send-data-color', function(color) {
+            document.body.style.backgroundColor = color;
+        });
+    </script>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+        }
+        #red {
+            color: red;
+            background-color: red;
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+        }
+
+        #yellow {
+            color: yellow;
+            background-color: yellow;
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+        }
+
+        #green {
+            color: green;
+            background-color: green;
+            height: 50px;
+            width: 50px;
+            border-radius: 50%;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <button id="red" onclick=SendDataColor(this.id)></button>
+        <button id="yellow" onclick=SendDataColor(this.id)></button>
+        <button id="green" onclick=SendDataColor(this.id)></button>
+    </div>
+</body>
+<script>
+    function SendDataColor(id) {
+        // Client POST request to server
+        socket.emit('client-send-data-color', id);
+    }
+</script>
+
+</html>

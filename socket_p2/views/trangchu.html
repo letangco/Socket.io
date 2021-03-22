@@ -1,0 +1,36 @@
+<html>
+
+<head>
+    <title>Learning Socket.io</title>
+    <script src="socket.io/socket.io.js"></script>
+    <script>
+        var socket = io('http://localhost:3000');
+        socket.on('Server-send-data-all', function(data) {
+            document.getElementById('data-from-server').append(data + ', ');
+        });
+        socket.on('response-client', function(data) {
+            document.getElementById('data-from-server-to-client').append(data+ ' ,');
+        });
+        socket.on('exception-client', function(data) {
+            document.getElementById('data-from-server-to-client-exception').append(data+ ' ,');
+        });
+    </script>
+    <link rel="icon" href="../public/favicon.ico"/>
+    
+</head>
+
+<body>
+    Hello ejs
+    <button onclick=ConnectServer()>Connect to Server</button>
+    <h1 id='data-from-server'>Tất cả</h1>
+    <small id='data-from-server-to-client'>Riêng nó:</small>
+    <p id='data-from-server-to-client-exception' style="color: blue;">Trừ nó: </p>
+</body>
+<script>
+    function ConnectServer() {
+        // Client POST request to server
+        socket.emit('client-send-data', 'HELLO SOCKET.IO');
+    }
+</script>
+
+</html>
