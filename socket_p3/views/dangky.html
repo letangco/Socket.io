@@ -1,0 +1,61 @@
+<html>
+
+<head>
+    <title>Learning Socket.io</title>
+    <script src="socket.io/socket.io.js"></script>
+    <script>
+        var socket = io('http://localhost:3000');
+        socket.on('response-client-register', function (data) {
+            if (data.success) {
+                localStorage.setItem('user', JSON.stringify({
+                    id: data.value.id,
+                    username: data.value.username
+                }));
+                document.getElementById('txtUsername').value = '';
+                document.getElementById('txtPassword').value = '';
+                document.getElementById('txtConfirmPassword').value = '';
+                alert('Đăng ký thành công');
+                window.location.href = '/';
+            } else {
+                alert('Đăng ký thất bại, trùng username');
+            }
+        });
+    </script>
+    <link rel="stylesheet" type="text/css" href="layout.css">
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="loginForm">
+            <h1 style="color: red;">Register</h1>
+            <h3>Username:</h3>
+            <input type="text" id="txtUsername" value="">
+            <h3>Password</h3>
+            <input type="password" id="txtPassword" value="">
+            <h3>Confirm Password</h3>
+            <input type="password" id="txtConfirmPassword" value="">
+            <input type="button" value="Register" id="bthRegister" onclick=register()>
+            <a href="/">Đăng nhập tài khoản</a>
+        </div>
+    </div>
+    <script>
+        function register() {
+            const username = document.getElementById('txtUsername').value;
+            const password = document.getElementById('txtPassword').value;
+            const confirmPassword = document.getElementById('txtConfirmPassword').value;
+            if (username === '' || password === '' || confirmPassword === '') {
+                alert('Nhập không đúng định dạng!');
+            } else if (password !== confirmPassword) {
+                alert('Xác nhận mật khẩu không trùng khớp!!!');
+            } else {
+                const data = {
+                    username: username,
+                    password: password
+                }
+                socket.emit('client-register', data);
+            }
+        }
+    </script>
+</body>
+
+</html>

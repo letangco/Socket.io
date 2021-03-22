@@ -1,0 +1,42 @@
+<html>
+
+<head>
+    <title>Learning Socket.io</title>
+    <script src="socket.io/socket.io.js"></script>
+    <script src="jquery-3.6.0.min.js"></script>
+    <script src="process.js"></script>
+    <link rel="stylesheet" type="text/css" href="layout.css">
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="loginForm">
+            <h1 style="color: green;">Login</h1>
+            <h3>Username:</h3>
+            <input type="text" id="txtUsername" value="">
+            <input type="button" value="Register" id="btnRegister">
+        </div>
+        <div id="chatForm">
+            <div id="left">
+                <div id="boxTitle">User Online</div>
+                <div id="boxContent">
+                </div>
+            </div>
+            <div id="right">
+                <div id="sayHi">
+                    Hello
+                    <span id="currentUser"></span>
+                    <input type="button" id="btnLogout" value="Logout">
+                </div>
+                <div id="listMessages">
+
+                </div>
+                <small id="isTyping"></small>
+                <input type="text" id="txtMessage">
+                <input type="button" id="btnSendMesage" value="Send">
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

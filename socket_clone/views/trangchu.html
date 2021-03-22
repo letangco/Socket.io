@@ -1,0 +1,24 @@
+<html>
+
+<head>
+    <title>Learning Socket.io</title>
+    <script src="socket.io/socket.io.js"></script>
+    <script>
+        var socket = io('http://localhost:3000');
+    </script>
+    <link rel="icon" href="../public/favicon.ico"/>
+    
+</head>
+
+<body>
+    Hello ejs
+    <button onclick=ConnectServer()>Connect to Server</button>
+</body>
+<script>
+    function ConnectServer() {
+        // Client POST request to server
+        socket.emit('client-send-data', 'HELLO SOCKET.IO');
+    }
+</script>
+
+</html>
