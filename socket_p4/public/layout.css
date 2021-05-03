@@ -19,3 +19,8 @@ body{
     float: right;
     color: white;
 }
+
+.room:hover{
+    cursor: pointer;
+    color: red;
+}
