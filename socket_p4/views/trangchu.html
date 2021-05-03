@@ -9,34 +9,21 @@
 </head>
 
 <body>
-    <div id="wrapper">
-        <div id="loginForm">
-            <h1 style="color: green;">Login</h1>
-            <h3>Username:</h3>
-            <input type="text" id="txtUsername" value="">
-            <input type="button" value="Register" id="btnRegister">
-        </div>
-        <div id="chatForm">
-            <div id="left">
-                <div id="boxTitle">User Online</div>
-                <div id="boxContent">
-                </div>
-            </div>
-            <div id="right">
-                <div id="sayHi">
-                    Hello
-                    <span id="currentUser"></span>
-                    <input type="button" id="btnLogout" value="Logout">
-                </div>
-                <div id="listMessages">
-
-                </div>
-                <small id="isTyping"></small>
-                <input type="text" id="txtMessage">
-                <input type="button" id="btnSendMesage" value="Send">
-            </div>
-        </div>
+    <input type="text" id="txtRoom" placeholder="Nhập tên room"/>
+    <input type="button" id="btnTaoRoom" value="Tạo Phòng">
+    <div id="left">
+        <h3>ROOM ĐANG CÓ</h3>
+        <div id="dsRoom"></div>
     </div>
+    
+
+    </div>
+    <h4 id="roomHienTai">...</h4>
+    <div id="right">
+       
+    </div>
+    <input type="text" id="txtMessenger" />
+    <input type="button" value="Chat" id="bthChat">
 </body>
 
 </html>

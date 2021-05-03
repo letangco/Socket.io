@@ -1,53 +1,29 @@
 const socket = io("http://localhost:3000");
 
-socket.on('server-send-dang-ki-that-bai', function () {
-    alert("Sai username, có người đăng ký rồi");
-});
-
-socket.on('server-send-dang-ki-thanh-cong', function (data) {
-    $("#currentUser").html(data);
-    $("#loginForm").hide();
-    $("#chatForm").show();
-});
-
-socket.on('server-send-danh-sach-user', function (data) {
-    $("#boxContent").html("");
-    data.forEach(element => {
-        $("#boxContent").append("<div class='user'>" + element + "</div>")
-    });
-});
-
-socket.on('server-send-message', function(data) {
-    $('#listMessages').append("<div class='ms'>" + data.user+": "+ data.message + "</div>")
-});
-
-socket.on('server-send-user-is-typing', function(data){
-    $('#isTyping').html(data);
-});
-
-socket.on('server-send-user-no-typing', function(){
-    $('#isTyping').html("");
-});
-
 $(document).ready(function () {
-    $("#loginForm").show(2000);
-    $("#chatForm").hide(1000);
-    $("#btnRegister").click(function () {
-        socket.emit('client-send-Username', $("#txtUsername").val());
+    // Nhan danh sach rooms tu server
+    socket.on('server-send-rooms', function(data) {
+        $('#dsRoom').html("");
+        data.map(function(item) {
+            $('#dsRoom').append("<h4 class='room' >" + item + "</h4>");
+        })
     });
-    $("#btnLogout").click(function () {
-        socket.emit('logout');
-        $("#loginForm").show(2000);
-        $("#chatForm").hide(1000);
+
+
+    $('#btnTaoRoom').click(function() {
+        socket.emit('tao-room', $('#txtRoom').val());
     });
-    $("#btnSendMesage").click(function () {
-        socket.emit('user-send-message', $("#txtMessage").val());
-        $("#txtMessage").val("");
+
+    socket.on('server-send-room-socket', function(data) {
+        $('#roomHienTai').html(data);
     });
-    $("#txtMessage").focusin(function(){
-        socket.emit('toi-dang-go-chu');
+
+    $('#bthChat').click(function() {
+        socket.emit('user-chat', $('#txtMessenger').val());
+        $('#txtMessenger').val('');
     });
-    $("#txtMessage").focusout(function(){
-        socket.emit('khong-go-chu');
+
+    socket.on('server-chat', function(data) {
+        $('#right').append('<div>'+ data +'</div>');
     });
 });

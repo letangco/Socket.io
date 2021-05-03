@@ -28,49 +28,27 @@ const interfaceUser = (id, name, pass) => {
 
 io.on('connection', function (socket) {
     console.log('User connect to server: ', socket.id);
+    console.log('room: ', socket.adapter.rooms);
     socket.on('disconnect', function () {
         console.log(socket.id + ' has disconnected to server');
     });
-    socket.on('client-send-Username', (data) => {
-        if (mangUsers.indexOf(data) >= 0) {
-            socket.emit('server-send-dang-ki-that-bai');
-        } else {
-            mangUsers.push(data);
-            // Create key, value Username for socket
-            socket.Username = data;
-            socket.emit('server-send-dang-ki-thanh-cong', data);
-            io.sockets.emit('server-send-danh-sach-user', mangUsers);
-        }
-    });
-
-    socket.on("logout", function () {
-        // delete user logout of array
-        if (mangUsers.indexOf(socket.Username) > -1) {
-            mangUsers.splice(
-                mangUsers.indexOf(socket.Username), 1
-            );
-        }
-        socket.broadcast.emit('server-send-danh-sach-user', mangUsers);
-    });
-    socket.on("user-send-message", function (data) {
-        io.sockets.emit("server-send-message", {
-            user: socket.Username,
-            message: data
+    socket.on('tao-room', function(data) {
+        socket.join(data);
+        socket.Phong = data;
+        const listRoom = socket.adapter.rooms;
+        const MangRoom= [];
+        listRoom.forEach(function(person, tenPhong) {
+            MangRoom.push(tenPhong);
         });
+        io.sockets.emit('server-send-rooms', MangRoom);
+        socket.emit('server-send-room-socket', data);
     });
-    socket.on("toi-dang-go-chu", function(){
-        const s = socket.Username + " is typing";
-        io.sockets.emit('server-send-user-is-typing', s);
-    });
-    socket.on("khong-go-chu", function(){
-        io.sockets.emit('server-send-user-no-typing');
+    socket.on('user-chat', function(data){
+        // Chat trong 1 phong
+        io.sockets.in(socket.Phong).emit('server-chat', data);
     });
 });
 
 app.get('/', (req, res) => {
     res.render('trangchu');
-});
-
-app.get('/register', (req, res) => {
-    res.render('dangky');
 });
